@@ -7,18 +7,41 @@ import MenuScene from "./scenes/MenuScene.js";
 
 
 
+// const config = {
+//   type: Phaser.AUTO,
+//   width: window.innerWidth,
+//   height: window.innerHeight,
+//   backgroundColor: "#000000",
+//   physics: { default: "arcade" },
+//   scale: {
+//     mode: Phaser.Scale.RESIZE,
+//     autoCenter: Phaser.Scale.CENTER_BOTH,
+//   },
+//   scene: [MenuScene,GameScene, GameOverScene]
+// };
+
+// new Phaser.Game(config);
+
+
+
+
 const config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
   height: window.innerHeight,
   backgroundColor: "#000000",
+  parent: "app",          // attach canvas to #app div
   physics: { default: "arcade" },
   scale: {
-    mode: Phaser.Scale.RESIZE,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
+    mode: Phaser.Scale.RESIZE,        // fit canvas to screen
+    autoCenter: Phaser.Scale.CENTER_BOTH, // center canvas
   },
   scene: [MenuScene,GameScene, GameOverScene]
 };
 
-new Phaser.Game(config);
+const game = new Phaser.Game(config);
 
+// Make canvas resize when browser window resizes
+window.addEventListener("resize", () => {
+  game.scale.resize(window.innerWidth, window.innerHeight);
+});

@@ -41,52 +41,64 @@ export default class GameScene extends Phaser.Scene {
 
 
 
-    // ----- Mobile touch controls -----
-this.touchLeft = false;
-this.touchRight = false;
-this.touchUp = false;
-this.touchDown = false;
-this.isShooting = false;
+// ----- Mobile control state -----
+this.touchActive = false;
+this.touchX = 0;
+this.touchY = 0;
+this.touchStartTime = 0;
 
-this.startTouchX = 0;
-this.startTouchY = 0;
+this.moveLeft = false;
+this.moveRight = false;
+this.moveUp = false;
+this.moveDown = false;
 
 
 
-this.input.on("pointerdown", (pointer) => {
-  this.startTouchX = pointer.x;
-  this.startTouchY = pointer.y;
 
-  // Tap = shoot
-  this.isShooting = true;
+this.input.on("pointerdown", (p) => {
+  this.touchActive = true;
+  this.touchX = p.x;
+  this.touchY = p.y;
+  this.startTouchY = p.y;
+  this.touchStartTime = this.time.now;
 
-  // Left / Right movement
-  if (pointer.x < this.scale.width / 2) {
-    this.touchLeft = true;
+  // Horizontal decision once
+  this.moveLeft = p.x < this.scale.width / 2;
+  this.moveRight = p.x >= this.scale.width / 2;
+});
+
+this.input.on("pointermove", (p) => {
+  if (!this.touchActive) return;
+
+  const dy = p.y - this.startTouchY;
+
+  // Only vertical movement based on threshold
+  if (dy < -40) {
+    this.moveUp = true;
+    this.moveDown = false;
+  } else if (dy > 40) {
+    this.moveDown = true;
+    this.moveUp = false;
   } else {
-    this.touchRight = true;
+    this.moveUp = false;
+    this.moveDown = false;
   }
 });
 
 this.input.on("pointerup", () => {
-  this.touchLeft = false;
-  this.touchRight = false;
-  this.touchUp = false;
-  this.touchDown = false;
-  this.isShooting = false;
-});
-
-this.input.on("pointermove", (pointer) => {
-  const dy = pointer.y - this.startTouchY;
-
-  if (dy < -30) {
-    this.touchUp = true;
-    this.touchDown = false;
-  } else if (dy > 30) {
-    this.touchDown = true;
-    this.touchUp = false;
+  // TAP → shoot
+  const tapTime = this.time.now - this.touchStartTime;
+  if (tapTime < 200) {
+    this.fireOnce = true;
   }
+
+  this.touchActive = false;
+  this.moveLeft = false;
+  this.moveRight = false;
+  this.moveUp = false;
+  this.moveDown = false;
 });
+
 
 
 
@@ -266,11 +278,20 @@ this.input.on("pointermove", (pointer) => {
 
 
 
-// Keyboard controls (desktop)
-if (this.cursors.left.isDown || this.touchLeft) this.player.x -= speed;
-if (this.cursors.right.isDown || this.touchRight) this.player.x += speed;
-if (this.cursors.up.isDown || this.touchUp) this.player.y -= speed;
-if (this.cursors.down.isDown || this.touchDown) this.player.y += speed;
+
+
+// Desktop
+if (this.cursors.left.isDown) this.player.x -= speed;
+if (this.cursors.right.isDown) this.player.x += speed;
+if (this.cursors.up.isDown) this.player.y -= speed;
+if (this.cursors.down.isDown) this.player.y += speed;
+
+// Mobile (smooth & locked)
+if (this.moveLeft) this.player.x -= speed;
+if (this.moveRight) this.player.x += speed;
+if (this.moveUp) this.player.y -= speed;
+if (this.moveDown) this.player.y += speed;
+
 
 
 

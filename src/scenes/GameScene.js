@@ -79,7 +79,7 @@ if (this.isMobile) {
   this.shootBtn = this.add.circle(
     this.scale.width - 100,
     this.scale.height - 75,
-    25,
+    30,
     0xff0000,
     0.6
   ).setDepth(10).setInteractive();
@@ -173,7 +173,7 @@ if (this.isMobile) {
 
     // Player
     this.player = this.add
-      .image(this.cameras.main.width / 2, this.cameras.main.height - 50, "player")
+      .image(this.cameras.main.width / 2, this.cameras.main.height - 150, "player")
       .setScale(1.4);
 
     this.physics.add.existing(this.player);
@@ -222,13 +222,13 @@ if (this.isMobile) {
     });
 
     // Player vs enemies → Game Over
-    // this.physics.add.overlap(this.player, this.enemies1, () => {
-    //   this.endGame();
-    // });
+    this.physics.add.overlap(this.player, this.enemies1, () => {
+      this.endGame();
+    });
 
-    // this.physics.add.overlap(this.player, this.enemies2, () => {
-    //   this.endGame();
-    // });
+    this.physics.add.overlap(this.player, this.enemies2, () => {
+      this.endGame();
+    });
 
     // Spawn enemies
     this.time.addEvent({

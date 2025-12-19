@@ -17,9 +17,8 @@ const config = {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [GameScene]
+  scene: [MenuScene,GameScene, GameOverScene]
 };
 
-//,GameOverScene  MenuScene
 new Phaser.Game(config);
 

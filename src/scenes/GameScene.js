@@ -57,8 +57,8 @@ if (this.isMobile) {
 
   this.joyThumb = this.add.circle(
     100,
-    this.scale.height - 120,
-    30,
+    this.scale.height - 75,
+    25,
     0xffffff,
     0.5
   ).setScrollFactor(0).setDepth(11);
@@ -78,8 +78,8 @@ if (this.isMobile) {
   // --- Shoot button ---
   this.shootBtn = this.add.circle(
     this.scale.width - 100,
-    this.scale.height - 120,
-    50,
+    this.scale.height - 75,
+    25,
     0xff0000,
     0.6
   ).setDepth(10).setInteractive();
@@ -222,13 +222,13 @@ if (this.isMobile) {
     });
 
     // Player vs enemies → Game Over
-    this.physics.add.overlap(this.player, this.enemies1, () => {
-      this.endGame();
-    });
+    // this.physics.add.overlap(this.player, this.enemies1, () => {
+    //   this.endGame();
+    // });
 
-    this.physics.add.overlap(this.player, this.enemies2, () => {
-      this.endGame();
-    });
+    // this.physics.add.overlap(this.player, this.enemies2, () => {
+    //   this.endGame();
+    // });
 
     // Spawn enemies
     this.time.addEvent({

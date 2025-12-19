@@ -38,40 +38,76 @@ export default class GameScene extends Phaser.Scene {
     });
 
 
+// Enable multi-touch (2 fingers minimum)
+this.isMobile = this.sys.game.device.input.touch;
+this.input.addPointer(1);
 
-
- this.isMobile = this.sys.game.device.input.touch;
 
 
 if (this.isMobile) {
-  // Joystick base
-  this.joyBase = this.add.circle(100, this.scale.height - 120, 60, 0x000000, 0.3)
-    .setScrollFactor(0)
-    .setDepth(10);
 
-  // Joystick thumb
-  this.joyThumb = this.add.circle(100, this.scale.height - 120, 30, 0xffffff, 0.5)
-    .setScrollFactor(0)
-    .setDepth(11);
+  // --- Joystick visuals ---
+  this.joyBase = this.add.circle(
+    100,
+    this.scale.height - 120,
+    60,
+    0x000000,
+    0.3
+  ).setScrollFactor(0).setDepth(10);
 
+  this.joyThumb = this.add.circle(
+    100,
+    this.scale.height - 120,
+    30,
+    0xffffff,
+    0.5
+  ).setScrollFactor(0).setDepth(11);
+
+  // --- Make joystick interactive ---
+  this.joyBase.setInteractive(
+    new Phaser.Geom.Circle(0, 0, 60),
+    Phaser.Geom.Circle.Contains
+  );
+  this.joyThumb.setInteractive();
+
+  // --- Joystick state ---
   this.joyVector = new Phaser.Math.Vector2(0, 0);
   this.joyActive = false;
+  this.joyPointerId = null;
 
-  // Touch input
+  // --- Shoot button ---
+  this.shootBtn = this.add.circle(
+    this.scale.width - 100,
+    this.scale.height - 120,
+    50,
+    0xff0000,
+    0.6
+  ).setDepth(10).setInteractive();
+
+  this.shootingMobile = false;
+}
+
+
+
+
+
+if (this.isMobile) {
+
   this.input.on("pointerdown", (p) => {
-    if (p.x < this.scale.width / 2) {
+    // LEFT side → joystick
+    if (p.x < this.scale.width / 2 && this.joyPointerId === null) {
+      this.joyPointerId = p.id;
       this.joyActive = true;
-      this.joyPointer = p;
     }
   });
 
   this.input.on("pointermove", (p) => {
-    if (!this.joyActive) return;
+    if (!this.joyActive || p.id !== this.joyPointerId) return;
 
     const dx = p.x - this.joyBase.x;
     const dy = p.y - this.joyBase.y;
 
-    const dist = Math.min(50, Math.sqrt(dx * dx + dy * dy));
+    const dist = Math.min(50, Math.hypot(dx, dy));
     const angle = Math.atan2(dy, dx);
 
     this.joyThumb.x = this.joyBase.x + Math.cos(angle) * dist;
@@ -83,34 +119,17 @@ if (this.isMobile) {
     );
   });
 
-  this.input.on("pointerup", () => {
-    this.joyActive = false;
-    this.joyThumb.x = this.joyBase.x;
-    this.joyThumb.y = this.joyBase.y;
-    this.joyVector.set(0, 0);
+  this.input.on("pointerup", (p) => {
+    if (p.id === this.joyPointerId) {
+      this.joyPointerId = null;
+      this.joyActive = false;
+      this.joyThumb.x = this.joyBase.x;
+      this.joyThumb.y = this.joyBase.y;
+      this.joyVector.set(0, 0);
+    }
   });
-}
 
-
-if (this.isMobile) {
-  this.shootBtn = this.add.circle(
-    this.scale.width - 100,
-    this.scale.height - 120,
-    50,
-    0xff0000,
-    0.6
-  ).setDepth(10);
-
-  this.shootBtnText = this.add.text(
-    this.scale.width - 100,
-    this.scale.height - 120,
-    "SHOOT",
-    { fontSize: "18px", color: "#ffffff" }
-  ).setOrigin(0.5).setDepth(11);
-
-  this.shootBtn.setInteractive();
-  this.shootingMobile = false;
-
+  // Shoot button events
   this.shootBtn.on("pointerdown", () => {
     this.shootingMobile = true;
   });
@@ -118,7 +137,14 @@ if (this.isMobile) {
   this.shootBtn.on("pointerup", () => {
     this.shootingMobile = false;
   });
+
+  this.shootBtn.on("pointerout", () => {
+    this.shootingMobile = false;
+  });
 }
+
+
+
 
 
 
@@ -296,8 +322,12 @@ if (this.isMobile) {
 
 
   update(time, delta) {
-    const speed = 25;
+   this.playerSpeedDesktop = 25;
+   this.playerSpeedMobile = 350;
 
+    const speed = this.isMobile
+  ? this.playerSpeedMobile
+  : this.playerSpeedDesktop;
 
 
 
@@ -308,6 +338,7 @@ if (!this.isMobile) {
   if (this.cursors.right.isDown) this.player.x += speed;
   if (this.cursors.up.isDown) this.player.y -= speed;
   if (this.cursors.down.isDown) this.player.y += speed;
+
 }
 
 // Mobile joystick

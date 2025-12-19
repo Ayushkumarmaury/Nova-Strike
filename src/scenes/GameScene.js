@@ -40,38 +40,86 @@ export default class GameScene extends Phaser.Scene {
 
 
 
+ this.isMobile = this.sys.game.device.input.touch;
 
-this.moveLeft = false;
-this.moveRight = false;
-this.moveUp = false;
-this.moveDown = false;
-this.fireHold = false;
 
-this.input.on("pointerdown", (p) => {
-  this.fireHold = true;
+if (this.isMobile) {
+  // Joystick base
+  this.joyBase = this.add.circle(100, this.scale.height - 120, 60, 0x000000, 0.3)
+    .setScrollFactor(0)
+    .setDepth(10);
 
-  // Horizontal
-  if (p.x < this.scale.width / 2) {
-    this.moveLeft = true;
-  } else {
-    this.moveRight = true;
-  }
+  // Joystick thumb
+  this.joyThumb = this.add.circle(100, this.scale.height - 120, 30, 0xffffff, 0.5)
+    .setScrollFactor(0)
+    .setDepth(11);
 
-  // Vertical
-  if (p.y < this.scale.height / 2) {
-    this.moveUp = true;
-  } else {
-    this.moveDown = true;
-  }
-});
+  this.joyVector = new Phaser.Math.Vector2(0, 0);
+  this.joyActive = false;
 
-this.input.on("pointerup", () => {
-  this.moveLeft = false;
-  this.moveRight = false;
-  this.moveUp = false;
-  this.moveDown = false;
-  this.fireHold = false;
-});
+  // Touch input
+  this.input.on("pointerdown", (p) => {
+    if (p.x < this.scale.width / 2) {
+      this.joyActive = true;
+      this.joyPointer = p;
+    }
+  });
+
+  this.input.on("pointermove", (p) => {
+    if (!this.joyActive) return;
+
+    const dx = p.x - this.joyBase.x;
+    const dy = p.y - this.joyBase.y;
+
+    const dist = Math.min(50, Math.sqrt(dx * dx + dy * dy));
+    const angle = Math.atan2(dy, dx);
+
+    this.joyThumb.x = this.joyBase.x + Math.cos(angle) * dist;
+    this.joyThumb.y = this.joyBase.y + Math.sin(angle) * dist;
+
+    this.joyVector.set(
+      Math.cos(angle) * (dist / 50),
+      Math.sin(angle) * (dist / 50)
+    );
+  });
+
+  this.input.on("pointerup", () => {
+    this.joyActive = false;
+    this.joyThumb.x = this.joyBase.x;
+    this.joyThumb.y = this.joyBase.y;
+    this.joyVector.set(0, 0);
+  });
+}
+
+
+if (this.isMobile) {
+  this.shootBtn = this.add.circle(
+    this.scale.width - 100,
+    this.scale.height - 120,
+    50,
+    0xff0000,
+    0.6
+  ).setDepth(10);
+
+  this.shootBtnText = this.add.text(
+    this.scale.width - 100,
+    this.scale.height - 120,
+    "SHOOT",
+    { fontSize: "18px", color: "#ffffff" }
+  ).setOrigin(0.5).setDepth(11);
+
+  this.shootBtn.setInteractive();
+  this.shootingMobile = false;
+
+  this.shootBtn.on("pointerdown", () => {
+    this.shootingMobile = true;
+  });
+
+  this.shootBtn.on("pointerup", () => {
+    this.shootingMobile = false;
+  });
+}
+
 
 
 
@@ -255,16 +303,18 @@ this.input.on("pointerup", () => {
 
 
 // Desktop
-if (this.cursors.left.isDown) this.player.x -= speed;
-if (this.cursors.right.isDown) this.player.x += speed;
-if (this.cursors.up.isDown) this.player.y -= speed;
-if (this.cursors.down.isDown) this.player.y += speed;
+if (!this.isMobile) {
+  if (this.cursors.left.isDown) this.player.x -= speed;
+  if (this.cursors.right.isDown) this.player.x += speed;
+  if (this.cursors.up.isDown) this.player.y -= speed;
+  if (this.cursors.down.isDown) this.player.y += speed;
+}
 
-// Mobile
-if (this.moveLeft) this.player.x -= speed;
-if (this.moveRight) this.player.x += speed;
-if (this.moveUp) this.player.y -= speed;
-if (this.moveDown) this.player.y += speed;
+// Mobile joystick
+if (this.isMobile && this.joyVector) {
+  this.player.x += this.joyVector.x * speed * (delta / 1000);
+  this.player.y += this.joyVector.y * speed * (delta / 1000);
+}
 
 
 
@@ -299,9 +349,8 @@ if (this.moveDown) this.player.y += speed;
     //   this.lastFired = time + 250; // cooldown 200ms
     // }
 
-
-  if (
-  (this.sKey.isDown || this.fireHold) &&
+if (
+  (this.sKey.isDown || this.shootingMobile) &&
   time > this.lastFired
 ) {
   this.shootBullet(
@@ -314,6 +363,7 @@ if (this.moveDown) this.player.y += speed;
   );
   this.lastFired = time + 250;
 }
+
 
 
 

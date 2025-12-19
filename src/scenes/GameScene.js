@@ -325,19 +325,23 @@ if (this.moveDown) this.player.y += speed;
     // }
 
 
-    if (
-  (this.sKey.isDown || this.isShooting) && time > this.lastFired ) {
-      this.shootBullet(
-        this.playerBullets,
-        this,
-        this.player.x,
-        this.player.y - 30,
-        -750,
-        0xffa500
+   if (
+  (this.sKey.isDown || this.fireOnce) &&
+  time > this.lastFired
+) {
+  this.shootBullet(
+    this.playerBullets,
+    this,
+    this.player.x,
+    this.player.y - 30,
+    -750,
+    0xffa500
   );
 
   this.lastFired = time + 250;
+  this.fireOnce = false;
 }
+
 
 
 

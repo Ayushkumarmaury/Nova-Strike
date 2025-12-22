@@ -11,6 +11,8 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("enemy1", "enemy1.png");
     this.load.image("enemy2", "Enemy.png");
 
+    this.load.audio("audio", "audio.mp3");
+
     this.load.spritesheet("explosion", "explosion.png", {
         frameWidth: 96,  // depends on your sprite sheet
         frameHeight: 93,
@@ -27,7 +29,8 @@ export default class GameScene extends Phaser.Scene {
     this.healthBarBg = this.add.rectangle(20, this.scale.height / 2, 20, 200, 0x444444).setOrigin(0.5);
     this.healthBar = this.add.rectangle(20, this.scale.height / 2 + 100, 20, 200, 0x00ff00).setOrigin(0.5, 1);
     
-
+    // Play audio on loop
+    this.saudio = this.sound.add("audio", { loop: false, volume: 1.0 });
 
     this.anims.create({
       key: "explode",
@@ -196,6 +199,7 @@ if (this.isMobile) {
     // Player bullets vs enemies
     this.physics.add.overlap(this.playerBullets, this.enemies1, (bullet, enemy) => {
       bullet.destroy();
+      this.saudio.play();
       const explosion = this.add.sprite(enemy.x, enemy.y, "explosion");
       explosion.play("explode");
       explosion.on("animationcomplete", () => explosion.destroy());

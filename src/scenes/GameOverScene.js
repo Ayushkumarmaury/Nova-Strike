@@ -20,8 +20,9 @@ export default class GameOverScene extends Phaser.Scene {
     // --- Responsive Game Over Image (Replay Button) ---
     this.gameOverImage = this.add.image(this.scale.width / 2, this.scale.height * 0.5,"replay_btn");
 
-    const maxWidth = this.scale.width * 0.2;
-    const maxHeight = this.scale.height * 0.2;
+    let n_f = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 0.5 :0.2;
+    const maxWidth = this.scale.width * n_f;
+    const maxHeight = this.scale.height * n_f;
 
     const scaleX = maxWidth / this.gameOverImage.width;
     const scaleY = maxHeight / this.gameOverImage.height;
@@ -53,16 +54,18 @@ export default class GameOverScene extends Phaser.Scene {
     });
 
     // --- Responsive Score Text ---
+    let m = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 0.09 :0.03;
     this.scoreText = this.add.text(this.scale.width / 2, this.scale.height * 0.2, `Your Score is ${this.finalScore}.`, {
-      fontSize: `${Math.floor(this.scale.width * 0.03)}px`,
+      fontSize: `${Math.floor(this.scale.width * m)}px`,
       fill: "#ff0000",
       fontFamily: "Arial",
       fontStyle: "bold",
     }).setOrigin(0.5);
 
     // --- Responsive Restart Instruction ---
+    let m_another = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 0.05 :0.03;
     this.restartText = this.add.text(this.scale.width / 2, this.scale.height * 0.3, "Click on replay Button to play again.", {
-      fontSize: `${Math.floor(this.scale.width * 0.03)}px`,
+      fontSize: `${Math.floor(this.scale.width * m_another)}px`,
       fill: "#ff0000",
       fontFamily: "Arial",
       fontStyle: "bold",

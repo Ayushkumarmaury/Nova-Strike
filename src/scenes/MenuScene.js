@@ -17,8 +17,9 @@ export default class MenuScene extends Phaser.Scene {
 
 
      // --- Responsive Restart Instruction ---
+     let m = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 0.13 :0.05;
     this.nameText = this.add.text(this.scale.width / 2, this.scale.height * 0.3, "Nova Strike", {
-      fontSize: `${Math.floor(this.scale.width * 0.05)}px`,
+      fontSize: `${Math.floor(this.scale.width * m)}px`,
       fill: "rgba(234, 21, 25, 1)",
       fontFamily: "Arial",
       fontStyle: "bold",
@@ -27,8 +28,10 @@ export default class MenuScene extends Phaser.Scene {
     
     this.play_btn = this.add.image(this.scale.width / 2, this.scale.height * 0.5,"play_btn");
 
-    const maxWidth = this.scale.width * 0.2;
-    const maxHeight = this.scale.height * 0.2;
+
+    let n = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 0.5 :0.2;
+    const maxWidth = this.scale.width * n;
+    const maxHeight = this.scale.height *n;
 
     const scaleX = maxWidth / this.play_btn.width;
     const scaleY = maxHeight / this.play_btn.height;

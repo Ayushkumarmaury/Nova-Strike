@@ -175,9 +175,10 @@ if (this.isMobile) {
     });
 
     // Player
+    let s_player = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 1.1 :1.4;
     this.player = this.add
       .image(this.cameras.main.width / 2, this.cameras.main.height - 150, "player")
-      .setScale(1.4);
+      .setScale(s_player);
 
     this.physics.add.existing(this.player);
     this.player.body.setCollideWorldBounds(true);

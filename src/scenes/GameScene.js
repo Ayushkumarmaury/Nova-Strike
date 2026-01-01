@@ -175,7 +175,7 @@ if (this.isMobile) {
     });
 
     // Player
-    let s_player = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 1.1 :1.4;
+    let s_player = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 1.15 :1.4;
     this.player = this.add
       .image(this.cameras.main.width / 2, this.cameras.main.height - 150, "player")
       .setScale(s_player);

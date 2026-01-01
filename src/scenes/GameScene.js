@@ -237,7 +237,7 @@ if (this.isMobile) {
 
     // Spawn enemies
     this.time.addEvent({
-      delay: 700,
+      delay: 750,
       callback: this.spawnEnemy,
       callbackScope: this,
       loop: true,
@@ -245,7 +245,7 @@ if (this.isMobile) {
 
     // Enemy shooting (enemy2 shoots downward)
     this.time.addEvent({
-      delay: 1300,
+      delay: 1000,
       callback: () => {
         this.enemies2.getChildren().forEach((enemy) => {
           this.shootBullet(this.enemyBullets, this, enemy.x, enemy.y + 25, 600, 0xff0000);

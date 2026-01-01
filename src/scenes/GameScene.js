@@ -82,7 +82,7 @@ if (this.isMobile) {
 
   // --- Shoot button ---
   this.shootBtn = this.add.circle(
-    this.scale.width - 100,
+    this.scale.width - 70,
     this.scale.height - 75,
     30,
     0xff0000,

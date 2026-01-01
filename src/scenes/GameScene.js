@@ -57,7 +57,7 @@ if (this.isMobile) {
     this.scale.height - 120,
     60,
     0x000000,
-    0.3
+    0.2
   ).setScrollFactor(0).setDepth(10);
 
   this.joyThumb = this.add.circle(
@@ -65,7 +65,7 @@ if (this.isMobile) {
     this.scale.height - 75,
     25,
     0xffffff,
-    0.5
+    0.3
   ).setScrollFactor(0).setDepth(11);
 
   // --- Make joystick interactive ---
@@ -86,7 +86,7 @@ if (this.isMobile) {
     this.scale.height - 75,
     30,
     0xff0000,
-    0.6
+    0.2
   ).setDepth(10).setInteractive();
 
   this.shootingMobile = false;

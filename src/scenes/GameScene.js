@@ -26,8 +26,10 @@ export default class GameScene extends Phaser.Scene {
     this.playerHealth = 100;
     this.maxHealth = 100;
 
-    this.healthBarBg = this.add.rectangle(20, this.scale.height / 2, 20, 200, 0x444444).setOrigin(0.5);
-    this.healthBar = this.add.rectangle(20, this.scale.height / 2 + 100, 20, 200, 0x00ff00).setOrigin(0.5, 1);
+    let sh = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 6 :20;
+    let sw = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 120 :200;
+    this.healthBarBg = this.add.rectangle(20, this.scale.height / 2, sh, sw, 0x444444).setOrigin(0.5);
+    this.healthBar = this.add.rectangle(20, this.scale.height / 2 + 100, sh, sw, 0x00ff00).setOrigin(0.5, 1);
     
     // Play audio on loop
     this.saudio = this.sound.add("audio", { loop: false, volume: 1.0 });
@@ -245,7 +247,7 @@ if (this.isMobile) {
 
     // Enemy shooting (enemy2 shoots downward)
     this.time.addEvent({
-      delay: 1000,
+      delay: 800,
       callback: () => {
         this.enemies2.getChildren().forEach((enemy) => {
           this.shootBullet(this.enemyBullets, this, enemy.x, enemy.y + 25, 600, 0xff0000);
@@ -314,8 +316,9 @@ if (this.isMobile) {
   }
 
   updateHealthBar() {
+  let h_player = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 1 :1;
   const healthRatio = Phaser.Math.Clamp(this.playerHealth / this.maxHealth, 0, 1);
-  this.healthBar.setScale(1, healthRatio);
+  this.healthBar.setScale(h_player, healthRatio);
   if (healthRatio > 0.6) {
     this.healthBar.fillColor = 0x00ff00; // green
   } else if (healthRatio > 0.3) {

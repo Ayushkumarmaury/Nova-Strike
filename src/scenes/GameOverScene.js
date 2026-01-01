@@ -20,7 +20,7 @@ export default class GameOverScene extends Phaser.Scene {
     // --- Responsive Game Over Image (Replay Button) ---
     this.gameOverImage = this.add.image(this.scale.width / 2, this.scale.height * 0.5,"replay_btn");
 
-    let n_f = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 0.5 :0.2;
+    let n_f = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 0.4 :0.2;
     const maxWidth = this.scale.width * n_f;
     const maxHeight = this.scale.height * n_f;
 

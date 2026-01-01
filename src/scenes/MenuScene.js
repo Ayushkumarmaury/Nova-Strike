@@ -29,7 +29,7 @@ export default class MenuScene extends Phaser.Scene {
     this.play_btn = this.add.image(this.scale.width / 2, this.scale.height * 0.5,"play_btn");
 
 
-    let n = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 0.5 :0.2;
+    let n = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 0.4 :0.2;
     const maxWidth = this.scale.width * n;
     const maxHeight = this.scale.height *n;
 

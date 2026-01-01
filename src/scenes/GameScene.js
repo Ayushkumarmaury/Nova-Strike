@@ -90,6 +90,67 @@ if (this.isMobile) {
   ).setDepth(10).setInteractive();
 
   this.shootingMobile = false;
+
+
+
+
+  // --- Store original thumb position ---
+this.joyThumbStart = { x: this.joyThumb.x, y: this.joyThumb.y };
+
+// --- Touch start on joystick ---
+this.input.on("pointerdown", (p) => {
+  if (p.x < this.scale.width / 2) {
+    this.joyActive = true;
+    this.joyPointerId = p.id;
+  }
+});
+
+// --- Touch move (drag joystick) ---
+this.input.on("pointermove", (p) => {
+  if (this.joyActive && p.id === this.joyPointerId) {
+    const dx = p.x - this.joyBase.x;
+    const dy = p.y - this.joyBase.y;
+    const length = Math.min(60, Math.sqrt(dx * dx + dy * dy));
+
+    const angle = Math.atan2(dy, dx);
+    this.joyThumb.x = this.joyBase.x + Math.cos(angle) * length;
+    this.joyThumb.y = this.joyBase.y + Math.sin(angle) * length;
+
+    this.joyVector.set(Math.cos(angle), Math.sin(angle));
+  }
+});
+
+// --- Touch end — RESET POSITION ---
+this.input.on("pointerup", (p) => {
+  if (p.id === this.joyPointerId) {
+    this.joyActive = false;
+    this.joyPointerId = null;
+
+    // **⬇ RESET THUMB POSITION HERE**
+    this.joyThumb.x = this.joyThumbStart.x;
+    this.joyThumb.y = this.joyThumbStart.y;
+    this.joyVector.set(0, 0);
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

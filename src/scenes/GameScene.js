@@ -26,8 +26,8 @@ export default class GameScene extends Phaser.Scene {
     this.playerHealth = 100;
     this.maxHealth = 100;
 
-    let sh = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 6 :20;
-    let sw = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 120 :200;
+    let sh = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 5 :20;
+    let sw = (this.sys.game.device.os.android || this.sys.game.device.os.iOS) ? 200 :200;
     this.healthBarBg = this.add.rectangle(20, this.scale.height / 2, sh, sw, 0x444444).setOrigin(0.5);
     this.healthBar = this.add.rectangle(20, this.scale.height / 2 + 100, sh, sw, 0x00ff00).setOrigin(0.5, 1);
     
